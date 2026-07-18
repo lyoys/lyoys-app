@@ -44,6 +44,12 @@ jobs:
           fi
           npx cap sync android
 
+      - name: Gerar ícone e splash screen (PNG a partir dos SVGs em assets/)
+        run: node scripts/generate-icons.cjs
+
+      - name: Aplicar ícone e splash screen ao projeto Android
+        run: npx capacitor-assets generate --android
+
       - name: Configurar assinatura do APK
         run: node scripts/patch-android-signing.cjs
 
