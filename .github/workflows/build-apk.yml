@@ -1,0 +1,75 @@
+name: Build APK
+
+# Gera o .apk assinado automaticamente, sem precisar de Android Studio na sua máquina.
+# Roda: a cada push na branch main, ou manualmente pela aba "Actions" no GitHub.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar código
+        uses: actions/checkout@v4
+
+      - name: Instalar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Instalar Java (necessário para o Android/Gradle)
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Instalar Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Instalar dependências do projeto
+        run: npm install
+
+      - name: Compilar o site (build web)
+        run: npm run build
+
+      - name: Adicionar plataforma Android (só cria se não existir)
+        run: |
+          if [ ! -d "android" ]; then
+            npx cap add android
+          fi
+          npx cap sync android
+
+      - name: Configurar assinatura do APK
+        run: node scripts/patch-android-signing.js
+
+      - name: Decodificar a keystore (vem de um secret do GitHub)
+        run: |
+          echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > android/app/release.keystore
+
+      - name: Gerar o APK assinado
+        working-directory: android
+        env:
+          ANDROID_KEYSTORE_PATH: app/release.keystore
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleRelease
+
+      - name: Guardar o APK como artefato do build
+        uses: actions/upload-artifact@v4
+        with:
+          name: lyoys-app-apk
+          path: android/app/build/outputs/apk/release/app-release.apk
+
+      - name: Publicar como Release do GitHub (gera um link de download fixo)
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: build-${{ github.run_number }}
+          name: Lyoys App — build ${{ github.run_number }}
+          files: android/app/build/outputs/apk/release/app-release.apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
