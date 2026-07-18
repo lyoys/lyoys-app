@@ -5,7 +5,11 @@ import App from './App';
 import './index.css';
 import { initPushNotifications } from './services/notifications';
 
-initPushNotifications();
+// .catch extra de segurança: mesmo com o try/catch interno, isso garante que uma
+// falha aqui nunca impeça o app de abrir e renderizar a tela.
+initPushNotifications().catch((err) => {
+  console.warn('Falha ao iniciar notificações push (app continua funcionando normalmente):', err);
+});
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
