@@ -13,3 +13,11 @@ export const MAX_VIDEO_MB = 80;
 // abre — assim, atualizar a planilha atualiza o app de quem já instalou, sem precisar
 // lançar uma nova versão. Veja README.md, seção "Atualizar vagas sem lançar nova versão".
 export const CASTING_DATA_URL = 'https://SUA-PLANILHA-PUBLICADA/pub?output=csv';
+
+// Notificações push (Firebase Cloud Messaging) só devem ser ativadas depois que o
+// projeto do Firebase estiver criado e o arquivo google-services.json estiver dentro de
+// android/app/ (veja README.md, seção "Notificações push"). Enquanto isso, deixe como
+// `false`: tentar registrar push sem o Firebase configurado pode travar o app ao abrir
+// (é um erro nativo do Android, não algo que o try/catch em JavaScript consiga evitar).
+// Depois de configurar o Firebase, mude para `true` e gere uma nova versão do app.
+export const PUSH_NOTIFICATIONS_ENABLED = false;
