@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+  <rect width="1024" height="1024" fill="#0b0b0b"/>
+
+  <!-- Mesma máscara do ícone, centralizada e menor, com o nome da marca embaixo -->
+  <g transform="translate(512,430) scale(0.62) translate(-512,-512)">
+    <path d="M512,372
+             C 420,320 300,340 258,420
+             C 220,494 250,566 322,592
+             C 372,610 412,588 434,552
+             C 452,578 480,594 512,594
+             C 544,594 572,578 590,552
+             C 612,588 652,610 702,592
+             C 774,566 804,494 766,420
+             C 724,340 604,320 512,372 Z"
+          fill="#caa14b"/>
+    <ellipse cx="368" cy="448" rx="58" ry="34" fill="#0b0b0b" transform="rotate(-8 368 448)"/>
+    <ellipse cx="656" cy="448" rx="58" ry="34" fill="#0b0b0b" transform="rotate(8 656 448)"/>
+    <circle cx="258" cy="392" r="10" fill="#caa14b"/>
+    <circle cx="766" cy="392" r="10" fill="#caa14b"/>
+    <path d="M290,350 C 270,330 250,320 232,322" stroke="#caa14b" stroke-width="10" fill="none" stroke-linecap="round"/>
+    <path d="M734,350 C 754,330 774,320 792,322" stroke="#caa14b" stroke-width="10" fill="none" stroke-linecap="round"/>
+  </g>
+
+  <text x="512" y="700" text-anchor="middle" font-family="Helvetica, Arial, sans-serif"
+        font-size="92" letter-spacing="18" fill="#caa14b">LYOYS</text>
+</svg>
