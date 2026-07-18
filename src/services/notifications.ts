@@ -1,19 +1,29 @@
 import { Capacitor } from '@capacitor/core';
 import { PushNotifications } from '@capacitor/push-notifications';
+import { PUSH_NOTIFICATIONS_ENABLED } from '../config';
 
 // Inicializa notificações push no Android via Capacitor + Firebase Cloud Messaging (FCM).
 // Pré-requisito: colocar o arquivo google-services.json (baixado do Firebase Console)
 // dentro de android/app/. Veja README.md, seção "Notificações push".
 //
 // IMPORTANTE: enquanto o Firebase não estiver configurado (sem google-services.json e
-// sem o plugin com.google.gms.google-services aplicado no build.gradle), chamar
-// PushNotifications.register() no Android pode lançar uma exceção nativa ("Default
-// FirebaseApp is not initialized") e derrubar o app inteiro ao abrir. Por isso, toda a
-// função roda dentro de um try/catch: se o Firebase não estiver pronto, o app continua
-// funcionando normalmente, só sem notificações push.
+// sem o plugin com.google.gms.google-services aplicado no build.gradle), pedir permissão
+// e chamar PushNotifications.register() no Android derruba o app inteiro — é um erro
+// nativo ("Default FirebaseApp is not initialized") que acontece do lado Java/Kotlin do
+// plugin e NÃO é interceptado por um try/catch em JavaScript (confirmado em teste real:
+// o app travava assim que a pessoa tocava em "Permitir" no pedido de notificação).
+//
+// Por isso a real proteção é o flag PUSH_NOTIFICATIONS_ENABLED em src/config.ts: enquanto
+// estiver `false`, esta função nem chega a pedir permissão ou registrar nada — só depois
+// que o Firebase estiver configurado de verdade é seguro mudar esse flag para `true`.
 export async function initPushNotifications() {
   if (!Capacitor.isNativePlatform()) {
     // No navegador (modo dev/preview) não há push nativo; não faz nada.
+    return;
+  }
+
+  if (!PUSH_NOTIFICATIONS_ENABLED) {
+    console.log('Notificações push desativadas (PUSH_NOTIFICATIONS_ENABLED=false em src/config.ts). Firebase ainda não configurado.');
     return;
   }
 
