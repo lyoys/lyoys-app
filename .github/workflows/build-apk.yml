@@ -42,7 +42,7 @@ jobs:
           npx cap sync android
 
       - name: Configurar assinatura do APK
-        run: node scripts/patch-android-signing.js
+        run: node scripts/patch-android-signing.cjs
 
       - name: Decodificar a keystore (vem de um secret do GitHub)
         run: |
