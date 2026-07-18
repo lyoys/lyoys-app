@@ -1,5 +1,12 @@
 # Disponibilizar o app para download pelo site (sem Play Store)
 
+> **Status atual (18/07/2026): já está tudo configurado e no ar.** Repositório criado e
+> público (`https://github.com/lyoys/lyoys-app`), keystore e secrets cadastrados, workflow
+> rodando sem erro, botão do site já ligado ao link fixo de download. Esta seção fica
+> registrada como referência de como foi feito e para o caso de precisar refazer algo
+> (ex.: keystore perdida, repositório novo). O link fixo que o botão do site usa é:
+> `https://github.com/lyoys/lyoys-app/releases/latest/download/app-release.apk`.
+
 Dá para distribuir o app Lyoys direto pelo site institucional (Wix), sem depender da
 aprovação nem da conta paga da Google Play. O usuário baixa um arquivo `.apk` e instala
 manualmente no Android. Isso pode ser usado como solução imediata, em paralelo com o

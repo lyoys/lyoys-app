@@ -124,17 +124,39 @@ candidatura não pôde ser enviada, em vez de fingir sucesso.
 
 ## Notificações push
 
-Usa `@capacitor/push-notifications` (Firebase Cloud Messaging no Android). Passos:
+Usa `@capacitor/push-notifications` (Firebase Cloud Messaging no Android). **Hoje está
+desativado de propósito**: `PUSH_NOTIFICATIONS_ENABLED = false` em `src/config.ts`.
+
+Isso não é só uma precaução — foi confirmado em teste real que, sem o Firebase
+configurado, tentar pedir permissão e registrar push derruba o app inteiro ao abrir (é um
+erro nativo do Android, que um `try/catch` em JavaScript não consegue evitar). Por isso
+`src/services/notifications.ts` checa esse flag **antes** de fazer qualquer chamada nativa
+— enquanto estiver `false`, o app nem tenta.
+
+Passos para ativar de verdade:
 
 1. Crie um projeto no [Firebase Console](https://console.firebase.google.com/).
 2. Adicione um app Android com o `appId` `com.lyoysentertainment.app` (o mesmo do
    `capacitor.config.ts`).
 3. Baixe o `google-services.json` e coloque em `android/app/` depois de rodar
-   `npx cap add android`.
+   `npx cap add android` (se estiver usando o build automático do GitHub Actions, veja
+   `DISTRIBUICAO_APK.md` para uma forma de injetar esse arquivo via secret, do mesmo jeito
+   que a keystore de assinatura).
 4. Rode `npx cap sync`.
+5. Só então mude `PUSH_NOTIFICATIONS_ENABLED` para `true` em `src/config.ts` e gere uma
+   nova versão do app.
 
 Para disparar notificações (ex.: "nova chamada de casting aberta"), use o Firebase
 Console ou a API do FCM a partir do backend que você configurar.
+
+## Ícone e tela de abertura (splash)
+
+Gerados automaticamente a cada build (`scripts/generate-icons.cjs` +
+`npx capacitor-assets generate --android`, já integrados no
+`.github/workflows/build-apk.yml`) a partir da máscara veneziana que já aparece no site
+institucional — nenhuma arte separada precisa ser mantida manualmente. Veja
+`PROGRESS.md`, seção "Como trocar o ícone/splash quando tiverem uma arte oficial", para
+substituir por uma arte própria em alta resolução quando estiver pronta.
 
 ## Atualizar o conteúdo do app
 
