@@ -1,7 +1,32 @@
 # Progresso do app Lyoys — checkpoint
 
-Última atualização: 17/07/2026. Este arquivo existe para retomar o trabalho na próxima
+Última atualização: 18/07/2026. Este arquivo existe para retomar o trabalho na próxima
 sessão sem precisar reexplicar tudo.
+
+## Atualização de 18/07/2026 — app publicado e primeiros bugs corrigidos
+
+- Repositório `lyoys/lyoys-app` criado, público, com build automático via GitHub Actions
+  (`.github/workflows/build-apk.yml`) funcionando de ponta a ponta (keystore + secrets
+  configurados, `.apk` assinado gerado a cada push).
+- Botão "Baixar para Android (.apk)" da página Download do site (Wix) ligado ao link
+  estável `https://github.com/lyoys/lyoys-app/releases/latest/download/app-release.apk`
+  (sempre baixa a versão mais recente, não precisa trocar o link a cada build). Site
+  publicado com essa mudança e com a URL da página ajustada para `/download`.
+- **Bug corrigido:** o app travava/fechava sozinho ao abrir no celular. Causa: o app
+  tentava registrar notificações push (Firebase) automaticamente ao iniciar, mas o
+  Firebase nunca foi configurado (falta `google-services.json`) — isso derrubava o app
+  inteiro. Corrigido em `src/services/notifications.ts` e `src/main.tsx`: a
+  inicialização agora roda protegida por try/catch, então uma falha de push não derruba
+  mais o app (fica só sem notificações até o Firebase ser configurado).
+- **Ícone/splash temporários adicionados:** o app usava o ícone genérico do Capacitor
+  (não tinha "capa" da Lyoys). Como ainda não há uma arte oficial de ícone em alta
+  resolução, criei `assets/icon.svg` e `assets/splash.svg` com uma versão simplificada
+  da máscara veneziana que já aparece no site, em dourado sobre fundo escuro. O workflow
+  agora roda `scripts/generate-icons.cjs` (converte os SVGs em PNG via `sharp`) e depois
+  `npx capacitor-assets generate --android` para aplicar esse ícone/splash ao projeto
+  Android automaticamente a cada build. **Quando a Lyoys tiver uma arte oficial de ícone**
+  (idealmente PNG quadrado 1024x1024, alta resolução), é só substituir os arquivos em
+  `assets/` (ou os SVGs) e o próximo build já sai com o ícone certo.
 
 ## O que já está pronto (código-fonte completo em `lyoys-app/`)
 
